@@ -27,7 +27,7 @@
 				</div>
 			</div>
 			<div class="col-lg-2 col-6 d-flex justify-content-end">
-				<button class="button button-cart">
+				<button class="button button-cart" @click="openCart()">
 					<img class="button-icon" src="/images/cart.svg" alt="icon: cart">
 					<span class="button-text">Cart</span>
 					<span class="button-text cart-count"></span>
@@ -38,6 +38,7 @@
 </template>
 
 <script setup>
+const viewCart = useViewCart()
 	let links	= ref([
 {id:0,
 	route:{path:"/products", query: {field:"gender", name: 'Womens'}}, text:"Womens"},
@@ -61,4 +62,8 @@
 
 // 	]
 // }
+
+const openCart = ()=> {
+	viewCart.value = true
+}
 </script>

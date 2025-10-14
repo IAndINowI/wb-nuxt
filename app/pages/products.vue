@@ -9,11 +9,11 @@
 			<div class="row long-goods-list">
 				<div class="col-lg-3 col-sm-6" v-for="card in data" :key="card.id" key="card.id">
 					<div class="goods-card">
-						<span class="label" v-if="card.label">{{ card.label.toUpperCase() }}</span>
+						<span class="label" v-if="card.label">{{ titleFormat(card.label) }}</span>
 						<img :src="card.img" :alt="card.name" class="goods-image">
 						<h3 class="goods-title">{{ card.name }}</h3>
 						<p class="goods-description">{{ card.description }}</p>
-						<button class="button goods-card-btn add-to-cart" :data-id="card.id">
+						<button class="button goods-card-btn add-to-cart" @click="addToCart(card)">
 							<span class="button-price">${{ card.price }}</span>
 						</button>
 					</div>
@@ -24,10 +24,16 @@
 	{{ route.query.field }} / {{ route.query.value }}
 </template>
 
-<script setup>
-const route = useRoute()
+<script setup lang="ts">
+import type { CartItem } from '~/models/cart-item.model'
+import type { Product } from '~/models/products.model'
 
-// Правильное использование useAsyncData с query параметрами
+
+const route = useRoute()
+const cartItems = useState<CartItem[]>('cart', () => [])
+// const { data } = await useFetch('/api/new-products')
+const cartitems = useCart()
+
 const { data } = await useAsyncData('filtred-products', () => {
   return $fetch('/api/filtred-products', {
     query: {
@@ -36,10 +42,31 @@ const { data } = await useAsyncData('filtred-products', () => {
     }
   })
 }, {
-  watch: [route] // Следим за изменениями route
+  watch: [route]
 })
 
 definePageMeta({
   layout: 'custom',
 })
+//  const {data} = await useFetch('/db.json')
+
+
+const addToCart = (product: Product) => {
+	const findItem = cartItems.value.find(c => c.id === product.id)
+
+	if (findItem) {
+		findItem.count++
+
+	} else {
+		const newCartItem: CartItem = {
+			id: product.id,
+			name: product.name,
+			price: parseInt(product.price),
+			count: 1
+
+		}
+		cartItems.value.push(newCartItem)
+	}
+console.log(cartItems)
+}
 </script>
