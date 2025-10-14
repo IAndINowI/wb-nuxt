@@ -2,8 +2,10 @@
 
 <div class="overlay show" :class="{'show': viewCart}" id="modal-cart">
 		<div class="modal">
-			<header class="modal-header">
-				<h2 class="modal-title">Cart</h2>
+			<header class="modal-header" :class="{ 'center-title': cart.length === 0 }">
+				<h2 class="modal-title" >
+                     {{ cart.length > 0 ? 'Корзина ' : 'Корзина пуста'  }} 
+                </h2>
 				<button class="modal-close" @click="closeCart">x</button>
 			</header>
 			<table class="cart-table" v-if="cart.length > 0">
@@ -53,8 +55,17 @@
 
 					</tfoot>
 			</table>
-            <div v-else class="empty-cart-message">
-                <p>Корзина пуста</p>
+            <div v-else
+            :style="{
+                textAlign: 'center'
+            }"
+            class="empty-cart-message">
+                <p>Пуста она, <br><br>
+                    Идем в обход, <br><br>
+                    Весь мир пускай нас подождет 
+
+
+                </p>
             </div>
  
             
@@ -68,11 +79,19 @@
 		</div>
 	</div>
 
-</template>
 
+</template>
+<style scoped>
+.center-title {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+</style>
 
 <script setup lang="ts">
 import type { CartItem } from '~/models/cart-item.model'
+
 
     const total = computed(() => cart.value.reduce((sum, item) => {
         return sum + (item.price * item.count)
@@ -104,6 +123,10 @@ import type { CartItem } from '~/models/cart-item.model'
         }
 
     }
+
+// const cartTitle = computed(() => {
+//     return cart.value.length > 0 ? 'Cart' : 'Cart is Empty'
+// })
 </script>
 
 <!-- <script setup>
